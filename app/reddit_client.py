@@ -6,10 +6,10 @@ import os
 def get_reddit_instance():
     if 'reddit_refresh_token' in session:
         return praw.Reddit(
-            client_id = os.getenv('REDDIT_CLIENT_ID'),
-            client_secret = os.getenv('REDDIT_CLIENT_SECRET'),
-            user_agent = os.getenv('REDDIT_USER_AGENT', 'RedditSearchTool/1.0'),
-            refresh_token=session['reddit_refresh_token']
+            client_id=Config.REDDIT_CLIENT_ID,
+            client_secret=Config.REDDIT_CLIENT_SECRET,
+            redirect_uri=Config.REDDIT_REDIRECT_URI,
+            user_agent=Config.REDDIT_USER_AGENT
         )
     return None
 
