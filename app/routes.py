@@ -10,12 +10,6 @@ from datetime import datetime, timezone
 
 main = Blueprint('main', __name__)
 
-# Reddit API credentials
-REDDIT_CLIENT_ID = "your_id"
-REDDIT_CLIENT_SECRET = "your_secret"
-REDDIT_USER_AGENT = "your_agent"
-REDDIT_REDIRECT_URI = "your_redirect_url"
-
 def login_required(f):
     @wraps(f)
     def decorated_function(*args, **kwargs):
