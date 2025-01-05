@@ -1,0 +1,127 @@
+body {
+    font-family: 'Comic Sans MS', cursive, sans-serif; /* Fun font choice */
+    background-color: #e3f2fd; /* Light blue background */
+    background-image: url('https://example.com/gummy-background.png'); /* Add your gummy background image */
+    background-size: cover; /* Cover the entire background */
+    background-repeat: no-repeat; /* Prevent repeating the background */
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+.container {
+    width: 90%;
+    max-width: 800px;
+    margin: 50px auto;
+    text-align: center;
+    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
+    padding: 30px; /* Increased padding for a spacious feel */
+    border-radius: 15px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    transition: transform 0.2s; /* Animation for hover effect */
+}
+
+.container:hover {
+    transform: translateY(-5px); /* Lift effect on hover */
+}
+
+h1 {
+    color: #3f51b5; /* Deep blue color for a fun title */
+    font-size: 2.5em; /* Larger font size */
+    margin-bottom: 20px; /* Spacing below the title */
+}
+
+/* Form Styles */
+form label {
+    display: block;
+    margin: 10px 0 5px;
+    font-weight: bold;
+    font-size: 1.2em; /* Slightly larger label text */
+}
+
+form input,
+form select {
+    width: 100%;
+    padding: 12px; /* Increased padding */
+    margin-bottom: 20px;
+    border: 1px solid #ccc;
+    border-radius: 10px; /* More rounded corners */
+    transition: border 0.3s; /* Smooth transition for border color */
+}
+
+form input:focus,
+form select:focus {
+    border-color: #3f51b5; /* Color change on focus */
+    outline: none; /* Remove outline */
+}
+
+.btn {
+    display: inline-block;
+    padding: 12px 25px;
+    background-color: #3f51b5; /* Deep blue button color */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 10px;
+    font-size: 1.1em; /* Slightly larger button text */
+    transition: background-color 0.3s, transform 0.3s; /* Animation for hover */
+}
+
+.btn:hover {
+    background-color: #283593; /* Darker shade on hover */
+    transform: scale(1.05); /* Slightly larger on hover */
+}
+
+/* Logout Link Styles */
+.logout {
+    margin-top: 20px;
+    color: #3f51b5;
+    text-decoration: none;
+    font-size: 1.1em; /* Larger font size */
+}
+
+.logout:hover {
+    text-decoration: underline;
+}
+
+/* Search Results Styles */
+.results {
+    margin-top: 30px;
+    text-align: left; /* Align text to the left */
+}
+
+.results h2 {
+    color: #3f51b5; /* Matching color with the title */
+    margin-bottom: 10px;
+    font-size: 2em; /* Larger font size */
+}
+
+.results .post {
+    border: 2px solid #e0e0e0; /* Slightly thicker border */
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 15px;
+    background-color: #f9fbe7; /* Light green background for posts */
+    transition: box-shadow 0.3s, transform 0.3s; /* Animation for hover effect */
+}
+
+.results .post:hover {
+    box-shadow: 0 4px 25px rgba(0, 123, 211, 0.3);
+    transform: scale(1.02); /* Slightly larger on hover */
+}
+
+.results .post h3 {
+    margin: 0;
+    font-size: 1.5em; /* Larger post title */
+    color: #333; /* Darker color for readability */
+}
+
+.results .post a {
+    color: #3f51b5;
+    text-decoration: none;
+    font-weight: bold; /* Make links bolder */
+}
+
+.results .post a:hover {
+    text-decoration: underline;
+    color: #1e88e5; /* Change color on hover */
+}

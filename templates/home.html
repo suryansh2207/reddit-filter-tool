@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Reddit Filter Tool</title>
+    <!-- <link rel="stylesheet" href="https://stackpath.bootstrapcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css"> -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container mt-5">
+        <h1>Welcome to the Reddit Filter Tool</h1>
+        <h3>Logged in as: {{ session['username'] }}</h3>
+        <form method="POST" action="{{ url_for('home') }}">
+            <div class="form-group">
+                <label for="subreddit">Subreddit:</label>
+                <input type="text" class="form-control" id="subreddit" name="subreddit" required>
+            </div>
+            <div class="form-group">
+                <label for="keywords">Keywords (comma-separated):</label>
+                <input type="text" class="form-control" id="keywords" name="keywords" required>
+            </div>
+            <div class="form-group">
+                <label for="sort">Sort By:</label>
+                <select class="form-control" id="sort" name="sort">
+                    <option value="relevance">Relevance</option>
+                    <option value="new">New</option>
+                    <option value="hot">Hot</option>
+                    <option value="top">Top</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label for="limit">Number of Posts:</label>
+                <input type="number" class="form-control" id="limit" name="limit" value="10" min="1">
+            </div>
+            <button type="submit" class="btn btn-primary">Search</button>
+            <a href="{{ url_for('logout') }}" class="btn btn-danger">Logout</a>
+        </form>
+    </div>
+</body>
+</html>
