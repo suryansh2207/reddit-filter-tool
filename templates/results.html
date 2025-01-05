@@ -17,6 +17,9 @@
                 <li>
                     <a href="{{ post.url }}" target="_blank">{{ post.title }}</a>
                     <p>Score: {{ post.score }} | Comments: {{ post.num_comments }}</p>
+                    {% if post.thumbnail and post.thumbnail != 'self' and post.thumbnail != 'default' %}
+                            <img src="{{ post.thumbnail }}" alt="Post thumbnail" class="thumbnail">
+                        {% endif %}
                 </li>
             {% endfor %}
             </ul>

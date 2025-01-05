@@ -59,15 +59,18 @@ def init_app(app: Flask):
                 # Prepare posts data to send to results page
                 posts = []
                 for submission in subreddit_data:
-                    # Include all submissions, but filter later if necessary
-                    posts.append({
-                        'title': submission.title,
-                        'url': submission.url,
+                    if any(keyword.lower() in submission.title.lower() or (submission.selftext and keyword.lower() in submission.selftext.lower()) for keyword in keywords):
+                        posts.append({
+                            'title': submission.title,
+                        'url': f"https://reddit.com{submission.permalink}",
                         'score': submission.score,
-                        'num_comments': submission.num_comments
-                    })
+                        'num_comments': submission.num_comments,
+                        'created_utc': submission.created_utc,
+                        'author': str(submission.author),
+                        'is_self': submission.is_self,
+                        'thumbnail': submission.thumbnail if hasattr(submission, 'thumbnail') else None
+                        })
 
-                    print(f"Raw submission: Title: {submission.title}, URL: {submission.url}")
 
                 # Filter posts for valid Reddit URLs if needed
                 posts = [post for post in posts if "reddit.com/r/" in post['url'] or "i.redd.it" in post['url']]
@@ -102,7 +105,6 @@ def init_app(app: Flask):
 
 # Create and configure the Flask app
 app = Flask(__name__)
-app.secret_key = "your_secret_key"  # Set a secret key for session management
 init_app(app)
 
 if __name__ == "__main__":

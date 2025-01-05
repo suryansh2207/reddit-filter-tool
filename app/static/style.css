@@ -1,12 +1,12 @@
 body {
     font-family: 'Comic Sans MS', cursive, sans-serif; /* Fun font choice */
     background-color: #e3f2fd; /* Light blue background */
-    background-image: url('https://example.com/gummy-background.png'); /* Add your gummy background image */
-    background-size: cover; /* Cover the entire background */
-    background-repeat: no-repeat; /* Prevent repeating the background */
-    color: #333;
+    /* background-image: url('https://example.com/gummy-background.png'); Add your gummy background image */
+    /* background-size: cover; /* Cover the entire background */
+    /* background-repeat: no-repeat; Prevent repeating the background */
+    /* color: #333;
     margin: 0;
-    padding: 0;
+    padding: 0; */
 }
 
 .container {
@@ -124,4 +124,11 @@ form select:focus {
 .results .post a:hover {
     text-decoration: underline;
     color: #1e88e5; /* Change color on hover */
+}
+
+.thumbnail {
+    max-width: 200px;
+    max-height: 200px;
+    margin-top: 10px;
+    border-radius: 4px;
 }
