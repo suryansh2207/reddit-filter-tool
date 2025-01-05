@@ -102,7 +102,6 @@ def init_app(app: Flask):
 
 # Create and configure the Flask app
 app = Flask(__name__)
-app.secret_key = "your_secret_key"  # Set a secret key for session management
 init_app(app)
 
 if __name__ == "__main__":
