@@ -76,30 +76,21 @@ requirements.txt
 run.py
 ```
 
-- 
+- __init__.py: Initializes the Flask application. 
 
-__init__.py: Initializes the Flask application.
-- 
+- config.py: Configuration file for Reddit API credentials.
 
-config.py: Configuration file for Reddit API credentials.
-- 
+- reddit_client.py: Creates a Reddit client using PRAW.
 
-reddit_client.py: Creates a Reddit client using PRAW.
-- 
+- routes.py: Defines the routes and logic for the web application.
 
-routes.py: Defines the routes and logic for the web application.
-- 
+- style.css: CSS styles for the application.
 
-style.css: CSS styles for the application.
-- 
+- app/templates/: HTML templates for the application.
 
-app/templates/: HTML templates for the application.
-- 
+- requirements.txt: List of dependencies.
 
-requirements.txt: List of dependencies.
-- 
-
-run.py: Entry point to run the Flask application.
+- run.py: Entry point to run the Flask application.
 
 ## Usage
 
