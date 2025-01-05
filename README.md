@@ -68,10 +68,10 @@ app/
     routes.py
     static/
         style.css
-    templates/
-        home.html
-        index.html
-        results.html
+templates/
+    home.html
+    index.html
+    results.html
 requirements.txt
 run.py
 ```
