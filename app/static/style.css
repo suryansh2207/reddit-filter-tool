@@ -1,134 +1,428 @@
-body {
-    font-family: 'Comic Sans MS', cursive, sans-serif; /* Fun font choice */
-    background-color: #e3f2fd; /* Light blue background */
-    /* background-image: url('https://example.com/gummy-background.png'); Add your gummy background image */
-    /* background-size: cover; /* Cover the entire background */
-    /* background-repeat: no-repeat; Prevent repeating the background */
-    /* color: #333;
+/* static/style.css */
+:root {
+    --primary-color: #1a1a1b;
+    --secondary-color: #ff4500;
+    --background-color: #f8f9fa;
+    --card-background: #ffffff;
+    --text-color: #1a1a1b;
+    --meta-text-color: #787c7e;
+    --border-color: #edeff1;
+    --input-background: #f6f7f8;
+}
+
+* {
     margin: 0;
-    padding: 0; */
+    padding: 0;
+    box-sizing: border-box;
 }
 
-.container {
-    width: 90%;
-    max-width: 800px;
-    margin: 50px auto;
+.login-container {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: var(--background-color);
+    padding: 20px;
+}
+
+.login-box {
+    background-color: var(--card-background);
+    border-radius: 12px;
+    padding: 40px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    max-width: 500px;
+    width: 100%;
     text-align: center;
-    background: rgba(255, 255, 255, 0.9); /* Semi-transparent white background */
-    padding: 30px; /* Increased padding for a spacious feel */
-    border-radius: 15px;
-    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
-    transition: transform 0.2s; /* Animation for hover effect */
 }
 
-.container:hover {
-    transform: translateY(-5px); /* Lift effect on hover */
+.login-box h1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+    color: var(--primary-color);
+}
+
+.login-box h1 i {
+    color: var(--secondary-color);
+}
+
+.login-button {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    background-color: var(--secondary-color);
+    color: white;
+    padding: 12px 24px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: 500;
+    margin: 20px 0;
+    transition: background-color 0.2s;
+}
+
+.login-button:hover {
+    background-color: #ff5722;
+}
+
+.login-info {
+    margin-top: 30px;
+    text-align: left;
+    padding: 20px;
+    background-color: var(--input-background);
+    border-radius: 8px;
+}
+
+.login-info p {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    color: var(--primary-color);
+    font-weight: 500;
+    margin-bottom: 10px;
+}
+
+.login-info ul {
+    list-style: none;
+    padding-left: 25px;
+}
+
+.login-info ul li {
+    color: var(--meta-text-color);
+    margin: 8px 0;
+    position: relative;
+}
+
+.login-info ul li:before {
+    content: "•";
+    color: var(--secondary-color);
+    position: absolute;
+    left: -15px;
+}
+
+.user-section {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+}
+
+.username {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    color: var(--meta-text-color);
+    font-weight: 500;
+}
+
+.logout-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 8px 16px;
+    background-color: var(--input-background);
+    color: var(--primary-color);
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.logout-button:hover {
+    background-color: #e4e6eb;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen-Sans, Ubuntu, Cantarell, sans-serif;
+    line-height: 1.6;
+    background-color: var(--background-color);
+    color: var(--text-color);
+}
+
+.app-container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.search-container {
+    margin-bottom: 30px;
+    text-align: center;
 }
 
 h1 {
-    color: #3f51b5; /* Deep blue color for a fun title */
-    font-size: 2.5em; /* Larger font size */
-    margin-bottom: 20px; /* Spacing below the title */
-}
-
-/* Form Styles */
-form label {
-    display: block;
-    margin: 10px 0 5px;
-    font-weight: bold;
-    font-size: 1.2em; /* Slightly larger label text */
-}
-
-form input,
-form select {
-    width: 100%;
-    padding: 12px; /* Increased padding */
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 10px; /* More rounded corners */
-    transition: border 0.3s; /* Smooth transition for border color */
-}
-
-form input:focus,
-form select:focus {
-    border-color: #3f51b5; /* Color change on focus */
-    outline: none; /* Remove outline */
-}
-
-.btn {
-    display: inline-block;
-    padding: 12px 25px;
-    background-color: #3f51b5; /* Deep blue button color */
-    color: #fff;
-    text-decoration: none;
-    border-radius: 10px;
-    font-size: 1.1em; /* Slightly larger button text */
-    transition: background-color 0.3s, transform 0.3s; /* Animation for hover */
-}
-
-.btn:hover {
-    background-color: #283593; /* Darker shade on hover */
-    transform: scale(1.05); /* Slightly larger on hover */
-}
-
-/* Logout Link Styles */
-.logout {
-    margin-top: 20px;
-    color: #3f51b5;
-    text-decoration: none;
-    font-size: 1.1em; /* Larger font size */
-}
-
-.logout:hover {
-    text-decoration: underline;
-}
-
-/* Search Results Styles */
-.results {
-    margin-top: 30px;
-    text-align: left; /* Align text to the left */
-}
-
-.results h2 {
-    color: #3f51b5; /* Matching color with the title */
+    font-size: 2.5rem;
     margin-bottom: 10px;
-    font-size: 2em; /* Larger font size */
+    color: var(--primary-color);
 }
 
-.results .post {
-    border: 2px solid #e0e0e0; /* Slightly thicker border */
-    border-radius: 10px;
+.subtitle {
+    color: var(--meta-text-color);
+    margin-bottom: 30px;
+}
+
+.search-box {
+    background: var(--card-background);
     padding: 20px;
+    border-radius: 12px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.input-group {
+    display: flex;
+    align-items: center;
     margin-bottom: 15px;
-    background-color: #f9fbe7; /* Light green background for posts */
-    transition: box-shadow 0.3s, transform 0.3s; /* Animation for hover effect */
 }
 
-.results .post:hover {
-    box-shadow: 0 4px 25px rgba(0, 123, 211, 0.3);
-    transform: scale(1.02); /* Slightly larger on hover */
+.input-label {
+    background: var(--input-background);
+    padding: 10px;
+    border-radius: 6px 0 0 6px;
+    color: var(--meta-text-color);
+    border: 1px solid var(--border-color);
+    border-right: none;
 }
 
-.results .post h3 {
-    margin: 0;
-    font-size: 1.5em; /* Larger post title */
-    color: #333; /* Darker color for readability */
+.subreddit-input,
+.keywords-input {
+    flex: 1;
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-size: 16px;
+    background: var(--input-background);
 }
 
-.results .post a {
-    color: #3f51b5;
+.subreddit-input {
+    border-radius: 0 6px 6px 0;
+}
+
+.controls {
+    display: flex;
+    gap: 10px;
+    justify-content: flex-end;
+}
+
+.sort-select {
+    padding: 10px 15px;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    background: var(--input-background);
+    color: var(--text-color);
+    font-size: 16px;
+}
+
+.search-button {
+    padding: 10px 20px;
+    background-color: var(--secondary-color);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: background-color 0.2s;
+}
+
+.search-button:hover {
+    background-color: #ff5722;
+}
+
+.results {
+    display: grid;
+    gap: 20px;
+}
+
+.post {
+    background: var(--card-background);
+    border-radius: 8px;
+    padding: 20px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+    display: flex;
+    gap: 20px;
+    transition: transform 0.2s;
+}
+
+.post:hover {
+    transform: translateY(-2px);
+}
+
+.post-content {
+    flex: 1;
+}
+
+.post h2 {
+    margin-bottom: 10px;
+    font-size: 1.2rem;
+}
+
+.post h2 a {
+    color: var(--text-color);
     text-decoration: none;
-    font-weight: bold; /* Make links bolder */
 }
 
-.results .post a:hover {
-    text-decoration: underline;
-    color: #1e88e5; /* Change color on hover */
+.post h2 a:hover {
+    color: var(--secondary-color);
 }
 
-.thumbnail {
-    max-width: 200px;
-    max-height: 200px;
-    margin-top: 10px;
-    border-radius: 4px;
+.post-meta {
+    display: flex;
+    gap: 15px;
+    color: var(--meta-text-color);
+    font-size: 0.9rem;
 }
+
+.post-meta span {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.post-thumbnail {
+    flex: 0 0 150px;
+}
+
+.post-thumbnail img {
+    width: 150px;
+    height: 100px;
+    object-fit: cover;
+    border-radius: 6px;
+}
+
+.loading {
+    text-align: center;
+    padding: 40px;
+}
+
+.spinner {
+    width: 40px;
+    height: 40px;
+    border: 4px solid var(--border-color);
+    border-top: 4px solid var(--secondary-color);
+    border-radius: 50%;
+    margin: 0 auto 15px;
+    animation: spin 1s linear infinite;
+}
+
+.no-results {
+    text-align: center;
+    padding: 40px;
+    color: var(--meta-text-color);
+}
+
+.no-results i {
+    font-size: 2rem;
+    margin-bottom: 15px;
+}
+
+.hidden {
+    display: none;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.auth-button {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    border-radius: 6px;
+    text-decoration: none;
+    font-weight: 500;
+    transition: background-color 0.2s;
+}
+
+.login-button {
+    background-color: #FF4500;
+    color: white;
+}
+
+.login-button:hover {
+    background-color: #FF5722;
+}
+
+.logout-button {
+    background-color: #E4E6EB;
+    color: #1A1A1B;
+}
+
+.logout-button:hover {
+    background-color: #D8DADF;
+}
+
+.auth-status {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    margin-bottom: 20px;
+    color: var(--meta-text-color);
+    font-size: 0.9rem;
+}
+
+.auth-status.authenticated {
+    color: #00A550;
+}
+
+.auth-status i {
+    font-size: 1.1rem;
+}
+
+@media (max-width: 768px) {
+    .login-box {
+        padding: 20px;
+    }
+    
+    .user-section {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .app-container {
+        padding: 10px;
+    }
+    
+    .post {
+        flex-direction: column;
+    }
+    
+    .post-thumbnail {
+        flex: 0 0 auto;
+    }
+    
+    .post-thumbnail img {
+        width: 100%;
+        height: 200px;
+    }
+    
+    .controls {
+        flex-direction: column;
+    }
+    
+    .search-button {
+        width: 100%;
+        justify-content: center;
+    }
+
+     .header {
+            flex-direction: column;
+            gap: 15px;
+            text-align: center;
+        }
+    }
+
+

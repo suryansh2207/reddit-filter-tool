@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reddit Filter Tool - Results</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+    <div class="container">
+        <div class="header">
+            <h1>Search Results</h1>
+            <div class="nav-buttons">
+                <a href="{{ url_for('main.home') }}" class="back-button">Back to Search</a>
+                <a href="{{ url_for('main.logout') }}" class="logout-button">Logout</a>
+            </div>
+        </div>
+        
+        <div class="search-info">
+            <p>Subreddit: r/{{ subreddit }}</p>
+            <p>Keywords: {{ keywords|join(', ') }}</p>
+        </div>
+        
+        <div class="results">
+            {% if results %}
+                {% for post in results %}
+                    <div class="post">
+                        <h2><a href="{{ post.url }}" target="_blank">{{ post.title }}</a></h2>
+                        <div class="post-meta">
+                            <span>Score: {{ post.score }}</span>
+                            <span>Comments: {{ post.num_comments }}</span>
+                            <span>Author: {{ post.author }}</span>
+                        </div>
+                        {% if post.thumbnail and post.thumbnail != 'self' and post.thumbnail != 'default' %}
+                            <img src="{{ post.thumbnail }}" alt="Post thumbnail" class="thumbnail">
+                        {% endif %}
+                    </div>
+                {% endfor %}
+            {% else %}
+                <p class="no-results">No posts found matching your criteria.</p>
+            {% endif %}
+        </div>
+    </div>
+</body>
+</html>

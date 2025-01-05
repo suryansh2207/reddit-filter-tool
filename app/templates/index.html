@@ -1,0 +1,165 @@
+<!-- templates/index.html -->
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reddit Search Tool</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="app-container">
+        <div class="header">
+            <h1>Reddit Search Tool</h1>
+            <div class="auth-section">
+                {% if authenticated %}
+                    <a href="{{ url_for('main.logout') }}" class="auth-button logout-button">
+                        <i class="fas fa-sign-out-alt"></i> Logout
+                    </a>
+                {% else %}
+                    <a href="{{ auth_url }}" class="auth-button login-button">
+                        <i class="fab fa-reddit"></i> Login with Reddit
+                    </a>
+                {% endif %}
+            </div>
+        </div>
+
+        <div class="search-container">
+            <p class="subtitle">Search any subreddit for specific keywords</p>
+            {% if authenticated %}
+                <p class="auth-status authenticated">
+                    <i class="fas fa-check-circle"></i> Authenticated with Reddit
+                </p>
+            {% else %}
+                <p class="auth-status">
+                    <i class="fas fa-info-circle"></i> Sign in to access private subreddits
+                </p>
+            {% endif %}
+            
+            <div class="search-box">
+                <div class="input-group">
+                    <span class="input-label">r/</span>
+                    <input type="text" id="subreddit" placeholder="subreddit" class="subreddit-input">
+                </div>
+                
+                <div class="input-group keywords-group">
+                    <input type="text" id="keywords" placeholder="Enter keywords (comma-separated)" class="keywords-input">
+                </div>
+                
+                <div class="controls">
+                    <select id="sort" class="sort-select">
+                        <option value="new">New</option>
+                        <option value="hot">Hot</option>
+                        <option value="top">Top</option>
+                    </select>
+                    
+                    <button id="search-btn" class="search-button">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                </div>
+            </div>
+        </div>
+        
+        <div class="results-container">
+            <div id="loading" class="loading hidden">
+                <div class="spinner"></div>
+                <p>Searching posts...</p>
+            </div>
+            
+            <div id="error-message" class="error-message hidden">
+                <i class="fas fa-exclamation-circle"></i>
+                <p></p>
+            </div>
+            
+            <div id="results" class="results"></div>
+            
+            <div id="no-results" class="no-results hidden">
+                <i class="fas fa-search"></i>
+                <p>No posts found matching your criteria.</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let searchTimeout;
+        const searchButton = document.getElementById('search-btn');
+        const loadingElement = document.getElementById('loading');
+        const resultsElement = document.getElementById('results');
+        const noResultsElement = document.getElementById('no-results');
+        const errorElement = document.getElementById('error-message');
+
+        async function searchPosts() {
+            const subreddit = document.getElementById('subreddit').value.trim();
+            const keywords = document.getElementById('keywords').value.trim();
+            const sort = document.getElementById('sort').value;
+            
+            if (!subreddit || !keywords) return;
+            
+            loadingElement.classList.remove('hidden');
+            resultsElement.innerHTML = '';
+            noResultsElement.classList.add('hidden');
+            errorElement.classList.add('hidden');
+            
+            try {
+                const response = await fetch(`/api/search?subreddit=${encodeURIComponent(subreddit)}&keywords=${encodeURIComponent(keywords)}&sort=${sort}`);
+                const data = await response.json();
+                
+                loadingElement.classList.add('hidden');
+                
+                if (!response.ok) {
+                    errorElement.querySelector('p').textContent = data.error || 'An error occurred while searching';
+                    errorElement.classList.remove('hidden');
+                    return;
+                }
+                
+                if (data.length === 0) {
+                    noResultsElement.classList.remove('hidden');
+                    return;
+                }
+                
+                data.forEach(post => {
+                    const postElement = createPostElement(post);
+                    resultsElement.appendChild(postElement);
+                });
+            } catch (error) {
+                console.error('Error:', error);
+                loadingElement.classList.add('hidden');
+                errorElement.querySelector('p').textContent = 'An error occurred while searching';
+                errorElement.classList.remove('hidden');
+            }
+        }
+
+        function createPostElement(post) {
+            const postDiv = document.createElement('div');
+            postDiv.className = 'post';
+            
+            postDiv.innerHTML = `
+                <div class="post-content">
+                    <h2><a href="${post.url}" target="_blank">${post.title}</a></h2>
+                    <div class="post-meta">
+                        <span><i class="fas fa-arrow-up"></i> ${post.score}</span>
+                        <span><i class="fas fa-comment"></i> ${post.num_comments}</span>
+                        <span><i class="fas fa-user"></i> ${post.author}</span>
+                        <span><i class="fas fa-clock"></i> ${post.time_ago}</span>
+                    </div>
+                </div>
+                ${post.thumbnail ? `<div class="post-thumbnail"><img src="${post.thumbnail}" alt="Post thumbnail"></div>` : ''}
+            `;
+            
+            return postDiv;
+        }
+
+        // Event listeners
+        searchButton.addEventListener('click', searchPosts);
+        
+        // Add debounced search for inputs
+        const inputs = ['subreddit', 'keywords', 'sort'];
+        inputs.forEach(id => {
+            document.getElementById(id).addEventListener('input', () => {
+                clearTimeout(searchTimeout);
+                searchTimeout = setTimeout(searchPosts, 500);
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,111 +1,179 @@
-from flask import Flask, flash, render_template, request, redirect, session, url_for
+# app/routes.py
+from flask import Blueprint, render_template, redirect, request, session, url_for, jsonify
+from functools import wraps
 import praw
-import prawcore
+from prawcore import NotFound
+from .config import Config
+import random
+import string
+from datetime import datetime, timezone
 
-# Reddit API credentials
-REDDIT_CLIENT_ID = "tL0fmz_JNzCbEBrbTIxCgA"
-REDDIT_CLIENT_SECRET = "wGxOpFfEJlDCvEWxWwam0_dlQpEgkw"
-REDDIT_USER_AGENT = "my_reddit_bot/1.0"
-REDDIT_REDIRECT_URI = "http://127.0.0.1:5000/callback"
+main = Blueprint('main', __name__)
 
-# Initialize PRAW
-reddit = praw.Reddit(
-    client_id=REDDIT_CLIENT_ID,
-    client_secret=REDDIT_CLIENT_SECRET,
-    redirect_uri=REDDIT_REDIRECT_URI,
-    user_agent=REDDIT_USER_AGENT,
-)
+def login_required(f):
+    @wraps(f)
+    def decorated_function(*args, **kwargs):
+        if 'reddit_refresh_token' not in session:
+            return redirect(url_for('main.login'))
+        return f(*args, **kwargs)
+    return decorated_function
 
-def init_app(app: Flask):
-    @app.route("/")
-    def index():
-        if "username" in session:
-            return redirect(url_for("home"))
-        auth_url = reddit.auth.url(["identity"], "random_string", "permanent")
-        return render_template("index.html", auth_url=auth_url)
+@main.route('/')
+@login_required
+def index():
+    return render_template('search.html')
 
-    @app.route("/callback")
-    def callback():
-        code = request.args.get("code")
-        state = request.args.get("state")  # Retrieve the state parameter if used for CSRF protection
-        print("Received code:", code)
-        print("Received state:", state)
+@main.route('/login')
+def login():
+    if 'reddit_refresh_token' in session:
+        return redirect(url_for('main.index'))
+    
+    reddit = praw.Reddit(
+        client_id=Config.REDDIT_CLIENT_ID,
+        client_secret=Config.REDDIT_CLIENT_SECRET,
+        redirect_uri=Config.REDDIT_REDIRECT_URI,
+        user_agent=Config.REDDIT_USER_AGENT
+    )
+    
+    state = ''.join(random.choices(string.ascii_letters + string.digits, k=32))
+    session['state'] = state
+    auth_url = reddit.auth.url(['identity', 'read', 'history'], state, 'permanent')
+    
+    return render_template('login.html', auth_url=auth_url)
 
-        if code:
-            try:
-                reddit.auth.authorize(code)
-                session["username"] = reddit.user.me().name
-                return redirect(url_for("home"))
-            except prawcore.exceptions.ResponseException as e:
-                print("Response Exception:", e.response)  # Debugging line
-                return "Authorization failed: " + str(e), 400
-            except Exception as e:
-                print("General Exception:", e)
-                return "Authorization failed", 400
-        return "No code provided", 400
+@main.route('/callback')
+def callback():
+    error = request.args.get('error')
+    if error:
+        return render_template('login.html', error=error)
+    
+    state = request.args.get('state')
+    if state != session.get('state'):
+        return render_template('login.html', error="Invalid state parameter")
+    
+    code = request.args.get('code')
+    
+    try:
+        reddit = praw.Reddit(
+            client_id=Config.REDDIT_CLIENT_ID,
+            client_secret=Config.REDDIT_CLIENT_SECRET,
+            redirect_uri=Config.REDDIT_REDIRECT_URI,
+            user_agent=Config.REDDIT_USER_AGENT
+        )
+        
+        refresh_token = reddit.auth.authorize(code)
+        session['reddit_refresh_token'] = refresh_token
+        
+        # Get username
+        reddit_user = reddit.user.me()
+        session['reddit_username'] = reddit_user.name
+        
+        return redirect(url_for('main.index'))
+    except Exception as e:
+        return render_template('login.html', error=str(e))
 
-    @app.route('/home', methods=['GET', 'POST'])
-    def home():
-        if request.method == 'POST':
-            subreddit_name = request.form['subreddit']
-            keywords = request.form['keywords'].split(',')
-            sort = request.form['sort']
-            limit = int(request.form['limit'])
+@main.route('/logout')
+def logout():
+    session.clear()
+    return redirect(url_for('main.login'))
 
-            try:
-                subreddit = reddit.subreddit(subreddit_name)
-                subreddit_data = subreddit.search(" OR ".join(keywords), sort=sort, limit=limit)
-
-                # Prepare posts data to send to results page
-                posts = []
-                for submission in subreddit_data:
-                    if any(keyword.lower() in submission.title.lower() or (submission.selftext and keyword.lower() in submission.selftext.lower()) for keyword in keywords):
-                        posts.append({
-                            'title': submission.title,
-                        'url': f"https://reddit.com{submission.permalink}",
-                        'score': submission.score,
-                        'num_comments': submission.num_comments,
-                        'created_utc': submission.created_utc,
-                        'author': str(submission.author),
-                        'is_self': submission.is_self,
-                        'thumbnail': submission.thumbnail if hasattr(submission, 'thumbnail') else None
-                        })
-
-
-                # Filter posts for valid Reddit URLs if needed
-                posts = [post for post in posts if "reddit.com/r/" in post['url'] or "i.redd.it" in post['url']]
-
-                if not posts:
-                    flash('No relevant Reddit posts found for your search.', 'warning')
-
-                # Store posts in session and redirect to results route
-                session['posts'] = posts
-                return redirect(url_for('results'))
-
-            except praw.exceptions.APIException as e:
-                flash(f'API error: {e}', 'danger')
-                return redirect(url_for('home'))  # Redirect back to home after an error
-            except Exception as e:
-                flash(f'An error occurred: {e}', 'danger')
-                return redirect(url_for('home'))  # Redirect back to home after an error
-
-        return render_template('home.html')
-
-    @app.route("/results")
-    def results():
-        # Get the posts from the session
-        posts = session.get('posts', [])
-        return render_template('results.html', posts=posts)
+@main.route('/api/search')
+@login_required
+def api_search():
+    subreddit = request.args.get('subreddit', '')
+    keywords = request.args.get('keywords', '').split(',')
+    sort = request.args.get('sort', 'new')
+    limit = min(int(request.args.get('limit', 100)), 100)
+    
+    reddit = praw.Reddit(
+        client_id=Config.REDDIT_CLIENT_ID,
+        client_secret=Config.REDDIT_CLIENT_SECRET,
+        refresh_token=session['reddit_refresh_token'],
+        user_agent=Config.REDDIT_USER_AGENT
+    )
+    
+    try:
+        results = search_subreddit(reddit, subreddit, keywords, sort, limit)
+        formatted_results = format_search_results(results)
+        return jsonify(formatted_results)
+    except NotFound:
+        return jsonify({"error": "Subreddit not found"}), 404
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 
 
-    @app.route("/logout")
-    def logout():
-        session.clear()
-        return redirect(url_for("index"))
+def search_subreddit(reddit, subreddit_name, keywords, sort='new', limit=25):
+    try:
+        subreddit = reddit.subreddit(subreddit_name)
+        search_query = ' OR '.join(keywords)
+        
+        if sort == 'new':
+            posts = subreddit.new(limit=limit)
+        elif sort == 'hot':
+            posts = subreddit.hot(limit=limit)
+        elif sort == 'top':
+            posts = subreddit.top(limit=limit)
+        else:
+            posts = subreddit.new(limit=limit)
+            
+        results = []
+        for post in posts:
+            if any(keyword.lower() in post.title.lower() or 
+                  (post.selftext and keyword.lower() in post.selftext.lower()) 
+                  for keyword in keywords):
+                results.append({
+                    'title': post.title,
+                    'url': f"https://reddit.com{post.permalink}",
+                    'score': post.score,
+                    'num_comments': post.num_comments,
+                    'created_utc': post.created_utc,
+                    'author': str(post.author),
+                    'is_self': post.is_self,
+                    'thumbnail': post.thumbnail if hasattr(post, 'thumbnail') else None
+                })
+                
+        return results
+    except Exception as e:
+        print(f"Error searching subreddit: {str(e)}")
+        raise
 
-# Create and configure the Flask app
-app = Flask(__name__)
-init_app(app)
+def format_search_results(results):
+    formatted_results = []
+    for post in results:
+        time_ago = format_time_ago(post['created_utc'])
+        formatted_results.append({
+            'title': post['title'],
+            'url': post['url'],
+            'score': format_number(post['score']),
+            'num_comments': format_number(post['num_comments']),
+            'author': post['author'],
+            'time_ago': time_ago,
+            'thumbnail': post['thumbnail'] if post['thumbnail'] and post['thumbnail'] not in ['self', 'default'] else None
+        })
+    return formatted_results
 
-if __name__ == "__main__":
-    app.run(debug=True)
+def format_number(num):
+    if num >= 1000000:
+        return f"{num/1000000:.1f}M"
+    if num >= 1000:
+        return f"{num/1000:.1f}K"
+    return str(num)
+
+def format_time_ago(created_utc):
+    now = datetime.now(timezone.utc)
+    created = datetime.fromtimestamp(created_utc, timezone.utc)
+    diff = now - created
+    
+    seconds = diff.total_seconds()
+    if seconds < 60:
+        return "just now"
+    elif seconds < 3600:
+        minutes = int(seconds / 60)
+        return f"{minutes}m ago"
+    elif seconds < 86400:
+        hours = int(seconds / 3600)
+        return f"{hours}h ago"
+    else:
+        days = int(seconds / 86400)
+        return f"{days}d ago"

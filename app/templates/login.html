@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Reddit Search Tool - Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+</head>
+<body>
+    <div class="login-container">
+        <div class="login-box">
+            <h1><i class="fab fa-reddit"></i> Reddit Search Tool</h1>
+            <p class="subtitle">Search any subreddit for specific keywords</p>
+            
+            {% if error %}
+            <div class="error-message">
+                <i class="fas fa-exclamation-circle"></i>
+                <p>{{ error }}</p>
+            </div>
+            {% endif %}
+            
+            <a href="{{ auth_url }}" class="login-button">
+                <i class="fab fa-reddit"></i> Login with Reddit
+            </a>
+            
+            <div class="login-info">
+                <p><i class="fas fa-info-circle"></i> Why login?</p>
+                <ul>
+                    <li>Access private subreddits</li>
+                    <li>Higher API rate limits</li>
+                    <li>Search your subscribed subreddits</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</body>
+</html>
