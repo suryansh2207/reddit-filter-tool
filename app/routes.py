@@ -8,15 +8,13 @@ import random
 import string
 from datetime import datetime, timezone
 
-<<<<<<< HEAD
 main = Blueprint('main', __name__)
-=======
+
 # Reddit API credentials
 REDDIT_CLIENT_ID = "your_id"
 REDDIT_CLIENT_SECRET = "your_secret"
 REDDIT_USER_AGENT = "your_agent"
 REDDIT_REDIRECT_URI = "your_redirect_url"
->>>>>>> c708759821b832992447b1f246bdad4dfb442c59
 
 def login_required(f):
     @wraps(f)
@@ -146,7 +144,6 @@ def search_subreddit(reddit, subreddit_name, keywords, sort='new', limit=25):
         print(f"Error searching subreddit: {str(e)}")
         raise
 
-<<<<<<< HEAD
 def format_search_results(results):
     formatted_results = []
     for post in results:
@@ -161,11 +158,11 @@ def format_search_results(results):
             'thumbnail': post['thumbnail'] if post['thumbnail'] and post['thumbnail'] not in ['self', 'default'] else None
         })
     return formatted_results
-=======
+    
 # Create and configure the Flask app
 app = Flask(__name__)
 init_app(app)
->>>>>>> c708759821b832992447b1f246bdad4dfb442c59
+
 
 def format_number(num):
     if num >= 1000000:
