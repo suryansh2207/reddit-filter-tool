@@ -152,11 +152,6 @@ def format_search_results(results):
             'thumbnail': post['thumbnail'] if post['thumbnail'] and post['thumbnail'] not in ['self', 'default'] else None
         })
     return formatted_results
-    
-# Create and configure the Flask app
-app = Flask(__name__)
-init_app(app)
-
 
 def format_number(num):
     if num >= 1000000:
