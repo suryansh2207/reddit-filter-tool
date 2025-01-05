@@ -68,10 +68,11 @@ app/
     routes.py
     static/
         style.css
-templates/
-    home.html
-    index.html
-    results.html
+    templates/
+        search.html
+        login.html
+        index.html
+        results.html
 requirements.txt
 run.py
 ```
@@ -86,7 +87,7 @@ run.py
 
 - style.css: CSS styles for the application.
 
-- app/templates/: HTML templates for the application.
+- templates/: HTML templates for the application.
 
 - requirements.txt: List of dependencies.
 
@@ -96,8 +97,8 @@ run.py
 
 1. Open your browser and navigate to `http://127.0.0.1:5000`.
 2. Click on the "Login with Reddit" button to authenticate with Reddit.
-3. After logging in, you will be redirected to the home page.
-4. Enter the subreddit, keywords, sorting option, and number of posts to search for.
+3. After logging in, you will be redirected to the search page.
+4. Enter the subreddit, keywordsand sorting option.
 5. Click the "Search" button to view the search results.
 6. Click on the post titles to view them on Reddit.
 7. Use the "Logout" button to log out of the application.
