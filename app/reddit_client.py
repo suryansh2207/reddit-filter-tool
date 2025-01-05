@@ -2,6 +2,7 @@ import praw
 from prawcore import NotFound
 from flask import session
 import os
+from .config import Config
 
 def get_reddit_instance():
     if 'reddit_refresh_token' in session:
